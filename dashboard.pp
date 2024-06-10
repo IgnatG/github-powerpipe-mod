@@ -12,6 +12,7 @@ dashboard "github_branch_counts_dashboard" {
           url LIKE 'https://github.com/UKHSA-Internal/edap%'
       EOQ
       width = 3
+      type = "alert"
     }
 
     card {
@@ -79,6 +80,7 @@ dashboard "github_branch_counts_dashboard" {
           AND is_archived = true
       EOQ
       width = 3
+      type = "info"
     }
   }
   container {
