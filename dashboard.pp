@@ -41,7 +41,7 @@ dashboard "github_branch_counts_dashboard" {
             repository_full_name
         )
         SELECT
-          SUM(branch_count) AS total_branches
+          SUM(branch_count) AS "Total branches"
         FROM
           repositories r
           LEFT JOIN branch_counts b
@@ -52,10 +52,10 @@ dashboard "github_branch_counts_dashboard" {
     }
 
     card {
-      title = "Repositories without Descriptions"
+      title = "Total Repositories without Descriptions"
       sql = <<EOQ
         SELECT
-          COUNT(*) AS "Repositories without description"
+          COUNT(*) AS "Total Repositories without description"
         FROM
           github_my_repository
         WHERE
@@ -67,10 +67,10 @@ dashboard "github_branch_counts_dashboard" {
     }
 
     card {
-      title = "Archived Repositories"
+      title = "Total Archived Repositories"
       sql = <<EOQ
         SELECT
-          COUNT(*) AS "Archived Repositories"
+          COUNT(*) AS "Total Archived Repositories"
         FROM
           github_my_repository
         WHERE
@@ -82,7 +82,7 @@ dashboard "github_branch_counts_dashboard" {
   }
   container {
     chart {
-      title = "Column Chart - Top 20 Branch Counts by Repository"
+      title = "Top 20 Branch Counts by Repository"
       type = "column"
       width = 12
       sql = <<EOQ
@@ -127,7 +127,7 @@ dashboard "github_branch_counts_dashboard" {
 
   container {
     table {
-      title = "Table - Branch Counts by Repository"
+      title = "Branch Counts by Repository"
       sql = <<EOQ
         WITH repositories AS (
           SELECT
@@ -161,7 +161,6 @@ dashboard "github_branch_counts_dashboard" {
         SELECT
           r.repository_full_name AS "Repository Name",
           r.url AS "Repository URL",
-          r.updated_at AS "Last Update",
           r.pushed_at AS "Last Push",
           r.is_archived AS "Is Archived",
           COALESCE(b.branch_count, 0) AS "Total Branches"
