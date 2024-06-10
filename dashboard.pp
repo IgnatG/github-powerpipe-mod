@@ -42,23 +42,10 @@ dashboard "github_branch_counts_dashboard" {
         )
         SELECT
           SUM(branch_count) AS total_branches
-        FROM (
-          SELECT
-            COUNT(name) AS branch_count
-          FROM
-            github_branch
-          WHERE
-            repository_full_name IN (
-              SELECT
-                repository_full_name
-              FROM
-                github_my_repository
-              WHERE
-                url LIKE 'https://github.com/UKHSA-Internal/edap%'
-            )
-          GROUP BY
-            repository_full_name
-        ) AS branch_counts
+        FROM
+          repositories r
+          LEFT JOIN branch_counts b
+          ON r.repository_full_name = b.repository_full_name
       EOQ
       width = 3
     }
