@@ -10,6 +10,8 @@ dashboard "github_branch_counts_dashboard" {
             url
           FROM
             github_my_repository
+          WHERE
+            url LIKE 'https://github.com/UKHSA-Internal/edap%'
         ),
         branch_counts AS (
           SELECT
@@ -28,14 +30,14 @@ dashboard "github_branch_counts_dashboard" {
             repository_full_name
         )
         SELECT
-          r.repository_full_name AS "Repository name",
-          COALESCE(b.branch_count, 0) AS "Total branches"
+          r.url AS "Repository URL",
+          COALESCE(b.branch_count, 0) AS "Total Branches"
         FROM
           repositories r
           LEFT JOIN branch_counts b
           ON r.repository_full_name = b.repository_full_name
         ORDER BY
-          "Total branches" DESC;
+          "Total Branches" DESC;
       EOQ
     }
 
@@ -46,9 +48,12 @@ dashboard "github_branch_counts_dashboard" {
       sql = <<EOQ
         WITH repositories AS (
           SELECT
+            url,
             REPLACE(url, 'https://github.com/', '') AS repository_full_name
           FROM
             github_my_repository
+          WHERE
+            url LIKE 'https://github.com/UKHSA-Internal/edap%'
         ),
         branch_counts AS (
           SELECT
