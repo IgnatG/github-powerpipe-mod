@@ -161,7 +161,6 @@ dashboard "github_branch_counts_dashboard" {
         SELECT
           r.repository_full_name AS "Repository Name",
           r.url AS "Repository URL",
-          r.description AS "Description",
           r.updated_at AS "Last Update",
           r.pushed_at AS "Last Push",
           r.is_archived AS "Is Archived",
