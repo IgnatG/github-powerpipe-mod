@@ -42,8 +42,23 @@ dashboard "github_branch_counts_dashboard" {
         )
         SELECT
           SUM(branch_count) AS total_branches
-        FROM
-          branch_counts
+        FROM (
+          SELECT
+            COUNT(name) AS branch_count
+          FROM
+            github_branch
+          WHERE
+            repository_full_name IN (
+              SELECT
+                repository_full_name
+              FROM
+                github_my_repository
+              WHERE
+                url LIKE 'https://github.com/UKHSA-Internal/edap%'
+            )
+          GROUP BY
+            repository_full_name
+        ) AS branch_counts
       EOQ
       width = 3
     }
@@ -84,6 +99,7 @@ dashboard "github_branch_counts_dashboard" {
       sql = <<EOQ
         WITH repositories AS (
           SELECT
+            url,
             REPLACE(url, 'https://github.com/', '') AS repository_full_name
           FROM
             github_my_repository
@@ -156,7 +172,7 @@ dashboard "github_branch_counts_dashboard" {
         )
         SELECT
           r.url AS "Repository URL",
-          r.description, AS "Description",
+          r.description AS "Description",
           r.updated_at AS "Last Update",
           r.pushed_at AS "Last Push",
           r.is_archived AS "Is Archived",
