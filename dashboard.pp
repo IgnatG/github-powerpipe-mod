@@ -48,20 +48,7 @@ dashboard "github_branch_counts_dashboard" {
           ON r.repository_full_name = b.repository_full_name
       EOQ
       width = 3
-    }
-
-    card {
-      title = "Archived Repositories"
-      sql = <<EOQ
-        SELECT
-          COUNT(*) AS archived_repositories
-        FROM
-          github_my_repository
-        WHERE
-          url LIKE 'https://github.com/UKHSA-Internal/edap%'
-          AND is_archived = true
-      EOQ
-      width = 3
+      type  = "alert" 
     }
 
     card {
@@ -74,6 +61,21 @@ dashboard "github_branch_counts_dashboard" {
         WHERE
           url LIKE 'https://github.com/UKHSA-Internal/edap%'
           AND (description IS NULL OR description = 'This is a description of the repo' OR description = '')
+      EOQ
+      width = 3
+      type  = "alert" 
+    }
+
+    card {
+      title = "Archived Repositories"
+      sql = <<EOQ
+        SELECT
+          COUNT(*) AS archived_repositories
+        FROM
+          github_my_repository
+        WHERE
+          url LIKE 'https://github.com/UKHSA-Internal/edap%'
+          AND is_archived = true
       EOQ
       width = 3
     }
@@ -126,7 +128,6 @@ dashboard "github_branch_counts_dashboard" {
   container {
     table {
       title = "Table - Branch Counts by Repository"
-      width = 6
       sql = <<EOQ
         WITH repositories AS (
           SELECT
