@@ -123,7 +123,7 @@ dashboard "github_branch_counts_dashboard" {
             repository_full_name
         )
         SELECT
-          r.url AS "Repository URL",
+          r.repository_full_name,
           COALESCE(b.branch_count, 0) AS branch_count
         FROM
           repositories r
@@ -139,7 +139,7 @@ dashboard "github_branch_counts_dashboard" {
   container {
     table {
       title = "Table - Branch Counts by Repository"
-      width = 12
+      width = 6
       sql = <<EOQ
         WITH repositories AS (
           SELECT
@@ -171,6 +171,7 @@ dashboard "github_branch_counts_dashboard" {
             repository_full_name
         )
         SELECT
+          r.repository_full_name AS "Repository Name",
           r.url AS "Repository URL",
           r.description AS "Description",
           r.updated_at AS "Last Update",
