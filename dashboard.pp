@@ -1,5 +1,5 @@
 dashboard "github_branch_counts_dashboard" {  
-  title = "GitHub = Admin Dashboard"
+  title = "GitHub - Admin Dashboard"
   container {
     card {
       title = "Total Repositories"
