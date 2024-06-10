@@ -118,7 +118,10 @@ dashboard "github_branch_counts_dashboard" {
         SELECT
           r.url AS "Repository URL",
           TO_CHAR(r.pushed_at, 'DD-MM-YYYY HH24:MI:SS') AS "Last Push",
-          r.is_archived AS "Is Archived",
+          CASE
+              WHEN r.is_archived THEN 'Yes'
+              ELSE 'No'
+            END AS "Is Archived"
           COALESCE(b.branch_count, 0) AS "Total Branches"
         FROM
           repositories r
