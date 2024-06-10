@@ -70,7 +70,7 @@ dashboard "github_branch_counts_dashboard" {
       title = "Archived Repositories"
       sql = <<EOQ
         SELECT
-          COUNT(*) AS archived_repositories
+          COUNT(*) AS "Archived Repositories"
         FROM
           github_my_repository
         WHERE
