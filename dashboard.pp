@@ -117,7 +117,7 @@ dashboard "github_branch_counts_dashboard" {
         )
         SELECT
           r.url AS "Repository URL",
-          r.pushed_at AS "Last Push",
+          TO_CHAR(r.pushed_at, 'DD-MM-YYYY HH24:MI:SS') AS "Last Push",
           r.is_archived AS "Is Archived",
           COALESCE(b.branch_count, 0) AS "Total Branches"
         FROM
