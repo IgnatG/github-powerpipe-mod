@@ -117,7 +117,7 @@ dashboard "github_branch_counts_dashboard" {
           r.url AS "Repository URL",
           TO_CHAR(r.pushed_at, 'DD-MM-YYYY HH24:MI:SS') AS "Last Push",
           COALESCE(r.language, 'Unknown') AS "Language",
-          (r.disk_usage / 1024) AS "Repository size (MB)",
+          (CAST(r.disk_usage AS FLOAT) / 1024) AS "Repository size (MB)",
           CASE
             WHEN r.is_archived THEN 'Yes'
             ELSE 'No'
