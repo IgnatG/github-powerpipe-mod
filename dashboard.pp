@@ -125,8 +125,8 @@ dashboard "github_branch_counts_dashboard" {
           CASE
               WHEN r.is_archived THEN 'Yes'
               ELSE 'No'
-            END AS "Is Archived"
-          COALESCE(b.branch_count, 0) AS "Total Branches"
+            END AS "Is Archived",
+            COALESCE(b.branch_count, 0) AS "Total Branches"
         FROM
           repositories r
           LEFT JOIN branch_counts b
