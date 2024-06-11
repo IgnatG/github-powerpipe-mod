@@ -2,7 +2,6 @@ dashboard "github_branch_counts_dashboard" {
   title = "GitHub - Admin Dashboard"
   container {
     card {
-      title = "Total Repositories"
       sql = <<EOQ
         SELECT
           COUNT(*) AS "Total repositories"
@@ -16,7 +15,6 @@ dashboard "github_branch_counts_dashboard" {
     }
 
     card {
-      title = "Total Branches"
       sql = <<EOQ
         WITH repositories AS (
           SELECT
@@ -54,7 +52,6 @@ dashboard "github_branch_counts_dashboard" {
     }
 
     card {
-      title = "Total Repositories without Descriptions"
       sql = <<EOQ
         SELECT
           COUNT(*) AS "Total Repositories without description"
@@ -69,7 +66,6 @@ dashboard "github_branch_counts_dashboard" {
     }
 
     card {
-      title = "Total Archived Repositories"
       sql = <<EOQ
         SELECT
           COUNT(*) AS "Total Archived Repositories"
@@ -120,16 +116,16 @@ dashboard "github_branch_counts_dashboard" {
         SELECT
           r.url AS "Repository URL",
           TO_CHAR(r.pushed_at, 'DD-MM-YYYY HH24:MI:SS') AS "Last Push",
-          r.language AS "Language",
-          r.disk_usage AS "Repository size",
+          COALESCE(r.language, 'Unknown') AS "Language",
+          (r.disk_usage / 1024) AS "Repository size (MB)",
           CASE
-              WHEN r.is_archived THEN 'Yes'
-              ELSE 'No'
-            END AS "Is Archived",
-            COALESCE(b.branch_count, 0) AS "Total Branches"
+            WHEN r.is_archived THEN 'Yes'
+            ELSE 'No'
+          END AS "Is Archived",
+          COALESCE(b.branch_count, 0) AS "Total Branches"
         FROM
           repositories r
-          LEFT JOIN branch_counts b
+        LEFT JOIN branch_counts b
           ON r.repository_full_name = b.repository_full_name
         ORDER BY
           "Total Branches" DESC;
