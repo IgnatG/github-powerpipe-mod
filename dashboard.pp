@@ -93,6 +93,8 @@ dashboard "github_branch_counts_dashboard" {
             REPLACE(url, 'https://github.com/', '') AS repository_full_name,
             url,
             pushed_at,
+            primary_language ->> 'name' as language,
+            disk_usage,
             is_archived
           FROM
             github_my_repository
@@ -118,6 +120,8 @@ dashboard "github_branch_counts_dashboard" {
         SELECT
           r.url AS "Repository URL",
           TO_CHAR(r.pushed_at, 'DD-MM-YYYY HH24:MI:SS') AS "Last Push",
+          r.language AS "Language",
+          r.disk_usage AS "Repository size",
           CASE
               WHEN r.is_archived THEN 'Yes'
               ELSE 'No'
