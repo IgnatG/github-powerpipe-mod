@@ -8,7 +8,7 @@ dashboard "github_branch_counts_dashboard" {
     }
 
     card {
-      query = query.github_total_branches
+      query = query.github_total_repository_branches
       width = 3
       type  = "alert" 
     }
@@ -45,7 +45,7 @@ query "github_total_repositories" {
     EOQ
 }
 
-query "github_total_branches" {
+query "github_total_repository_branches" {
   sql = <<-EOQ
     WITH repositories AS (
       SELECT
