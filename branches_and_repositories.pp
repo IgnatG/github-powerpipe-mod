@@ -177,6 +177,10 @@ query "github_wild_repositories" {
       ORDER BY
         "Total Branches" DESC;
     EOQ
+
+    param "repo" {
+      default = ""
+    }
 }
 
 query "github_branches_by_repository" {
