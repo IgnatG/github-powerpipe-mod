@@ -53,8 +53,8 @@ query "github_total_repository_branches" {
       FROM
         github_my_repository
       WHERE
-        url LIKE 'https://github.com/UKHSA-Internal/edap%'
-        AND is_archived = false
+        is_archived = false
+        AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
     ),
     branch_counts AS (
       SELECT
@@ -88,9 +88,9 @@ query "github_total_repositories_without_description" {
       FROM
         github_my_repository
       WHERE
-        url LIKE 'https://github.com/UKHSA-Internal/edap%'
+        is_archived = false
+        AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
         AND (description IS NULL OR description = 'This is a description of the repo' OR description = '')
-        AND is_archived = false
     EOQ
 }
 
@@ -119,8 +119,8 @@ query "github_branches_by_repository" {
         FROM
           github_my_repository
         WHERE
-          url LIKE 'https://github.com/UKHSA-Internal/edap%'
-          AND is_archived = false
+          is_archived = false
+          AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
       ),
       branch_counts AS (
         SELECT
