@@ -68,6 +68,8 @@ query "github_total_repository_branches" {
             repository_full_name
           FROM
             repositories
+          WHERE
+            is_archived = false
         )
       GROUP BY
         repository_full_name
