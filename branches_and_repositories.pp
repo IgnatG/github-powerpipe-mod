@@ -1,4 +1,4 @@
-dashboard "github_branch_counts_dashboard" {  
+dashboard "github_admin_dashboard" {  
   title = "GitHub - Admin Dashboard"
   container {
     card {
