@@ -94,7 +94,8 @@ query "github_total_repositories_without_description" {
       WHERE
         is_archived = false
         AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
-        AND (description IS NULL OR description = 'This is a description of the repo' OR description = '')
+        AND (description = 'This is a description of the repo' OR description = '')
+      LIMIT 10
     EOQ
 }
 
