@@ -31,7 +31,7 @@ dashboard "github_admin_dashboard" {
       title = "POSIT repositories"
       query = query.github_template_query
       args = {
-        criterion1 = "https://github.com/UKHSA-Internal/edap%posit%"
+        stm1 = "https://github.com/UKHSA-Internal/edap%posit%"
       }
     }
   }
@@ -41,7 +41,7 @@ dashboard "github_admin_dashboard" {
       title = "Glue Job repositories"
       query = query.github_template_query
       args = {
-        criterion1 = "https://github.com/UKHSA-Internal/edap%glue-script%"
+        stm1 = "https://github.com/UKHSA-Internal/edap%glue-script%"
       }
     }
   }
@@ -51,7 +51,7 @@ dashboard "github_admin_dashboard" {
       title = "Lambda repositories"
       query = query.github_template_query
       args = {
-        criterion1 = "https://github.com/UKHSA-Internal/edap%lambda%"
+        stm1 = "https://github.com/UKHSA-Internal/edap%lambda%"
       }
     }
   }
@@ -61,7 +61,7 @@ dashboard "github_admin_dashboard" {
       title = "Fargate repositories"
       query = query.github_template_query
       args = {
-        criterion1 = "https://github.com/UKHSA-Internal/edap%fargate%"
+        stm1 = "https://github.com/UKHSA-Internal/edap%fargate%"
       }
     }
   }
@@ -71,8 +71,8 @@ dashboard "github_admin_dashboard" {
       title = "TrueDat repositories"
       query = query.github_template_query
       args = {
-        criterion1 = "https://github.com/UKHSA-Internal/edap%td-%"
-        criterion2 = "https://github.com/UKHSA-Internal/edap%truedat%"
+        stm1 = "https://github.com/UKHSA-Internal/edap%td-%"
+        stm2 = "https://github.com/UKHSA-Internal/edap%truedat%"
       }
     }
   }
@@ -81,11 +81,12 @@ dashboard "github_admin_dashboard" {
 query "github_total_repositories" {
   sql = <<-EOQ
       SELECT
-        COUNT(*) AS "Total repositories"
+        COUNT(*) AS "Total Active repositories"
       FROM
         github_my_repository
       WHERE
-        url LIKE 'https://github.com/UKHSA-Internal/edap%'
+        is_archived = false
+        AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
     EOQ
 }
 
@@ -151,7 +152,6 @@ query "github_total_archived_repositories" {
     EOQ
 }
 
-
 query "github_template_query" {
   sql = <<-EOQ
       WITH repositories AS (
@@ -202,11 +202,11 @@ query "github_template_query" {
         "Total Branches" DESC;
     EOQ
 
-    param "criterion1" {
+    param "stm1" {
       default = ""
     }
     
-    param "criterion2" {
+    param "stm2" {
       default = ""
     }
 }
