@@ -71,7 +71,7 @@ dashboard "github_admin_dashboard" {
       title = "TrueDat repositories"
       query = query.github_template_query
       args = {
-        repo = "https://github.com/UKHSA-Internal/edap%td-%" OR url LIKE "https://github.com/UKHSA-Internal/edap%truedat%"
+        repo = "https://github.com/UKHSA-Internal/edap%td-% OR url LIKE https://github.com/UKHSA-Internal/edap%truedat%"
       }
     }
   }
