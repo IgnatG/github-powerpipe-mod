@@ -102,38 +102,39 @@ dashboard "github_branch_counts_dashboard" {
     }
   }
 
-  query "github_total_branches" {
-    sql = <<-EOQ
-        WITH repositories AS (
-          SELECT
-            REPLACE(url, 'https://github.com/', '') AS repository_full_name
-          FROM
-            github_my_repository
-          WHERE
-            url LIKE 'https://github.com/UKHSA-Internal/edap%'
-        ),
-        branch_counts AS (
-          SELECT
-            repository_full_name,
-            COUNT(name) AS branch_count
-          FROM
-            github_branch
-          WHERE
-            repository_full_name IN (
-              SELECT
-                repository_full_name
-              FROM
-                repositories
-            )
-          GROUP BY
-            repository_full_name
-        )
+}
+
+query "github_total_branches" {
+  sql = <<-EOQ
+      WITH repositories AS (
         SELECT
-          SUM(branch_count) AS "Total branches"
+          REPLACE(url, 'https://github.com/', '') AS repository_full_name
         FROM
-          repositories r
-          LEFT JOIN branch_counts b
-          ON r.repository_full_name = b.repository_full_name
-      EOQ
-  }
+          github_my_repository
+        WHERE
+          url LIKE 'https://github.com/UKHSA-Internal/edap%'
+      ),
+      branch_counts AS (
+        SELECT
+          repository_full_name,
+          COUNT(name) AS branch_count
+        FROM
+          github_branch
+        WHERE
+          repository_full_name IN (
+            SELECT
+              repository_full_name
+            FROM
+              repositories
+          )
+        GROUP BY
+          repository_full_name
+      )
+      SELECT
+        SUM(branch_count) AS "Total branches"
+      FROM
+        repositories r
+        LEFT JOIN branch_counts b
+        ON r.repository_full_name = b.repository_full_name
+    EOQ
 }
