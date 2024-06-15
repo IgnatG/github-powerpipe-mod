@@ -166,7 +166,7 @@ query "github_template_query" {
           github_my_repository
         WHERE
           is_archived = false
-          AND (url LIKE $1 OR LIKE $2)
+          AND (url LIKE $1 OR url LIKE $2)
       ),
       branch_counts AS (
         SELECT
