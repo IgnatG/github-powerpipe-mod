@@ -33,6 +33,7 @@ dashboard "github_admin_dashboard" {
       args = {
         repo = "https://github.com/UKHSA-Internal/edap%glue%"
       }
+    }
   }
 
   container {
