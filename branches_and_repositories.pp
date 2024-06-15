@@ -81,7 +81,7 @@ query "github_total_branches" {
   EOQ
 }
 
-query "github_total_repositories_without_description {
+query "github_total_repositories_without_description" {
   sql = <<-EOQ
       SELECT
         COUNT(*) AS "Total Repositories without description"
@@ -94,7 +94,7 @@ query "github_total_repositories_without_description {
     EOQ
 }
 
-query "github_total_archived_repositories {
+query "github_total_archived_repositories" {
   sql = <<-EOQ
       SELECT
         COUNT(*) AS "Total Archived Repositories"
