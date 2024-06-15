@@ -29,14 +29,20 @@ dashboard "github_admin_dashboard" {
   container {
     table {
       title = "Glue Job repositories"
-      query = query.github_glue_job_repositories
+      query = query.github_wild_repositories
+      param "repo" {
+        default = "https://github.com/UKHSA-Internal/edap%glue%"
+      }
     }
   }
 
   container {
     table {
       title = "Lambda repositories"
-      query = query.github_lambda_repositories
+      query = query.github_wild_repositories
+      param "repo" {
+        default = "https://github.com/UKHSA-Internal/edap%lambda%"
+      }
     }
   }
 
@@ -121,58 +127,8 @@ query "github_total_archived_repositories" {
     EOQ
 }
 
-query "github_glue_job_repositories" {
-  sql = <<-EOQ
-      WITH repositories AS (
-        SELECT
-          REPLACE(url, 'https://github.com/', '') AS repository_full_name,
-          url,
-          pushed_at,
-          primary_language ->> 'name' as language,
-          disk_usage,
-          is_archived
-        FROM
-          github_my_repository
-        WHERE
-          is_archived = false
-          AND url LIKE 'https://github.com/UKHSA-Internal/edap%glue%'
-      ),
-      branch_counts AS (
-        SELECT
-          repository_full_name,
-          COUNT(name) AS branch_count
-        FROM
-          github_branch
-        WHERE
-          repository_full_name IN (
-            SELECT
-              repository_full_name
-            FROM
-              repositories
-          )
-        GROUP BY
-          repository_full_name
-      )
-      SELECT
-        r.url AS "Repository URL",
-        TO_CHAR(r.pushed_at, 'DD-MM-YYYY HH24:MI:SS') AS "Last Push",
-        COALESCE(r.language, 'Unknown') AS "Language",
-        ROUND((CAST(r.disk_usage AS NUMERIC) / 1024), 2) || ' Mb' AS "Repository size (MB)",
-        CASE
-          WHEN r.is_archived THEN 'Yes'
-          ELSE 'No'
-        END AS "Is Archived",
-        COALESCE(b.branch_count, 0) AS "Total Branches"
-      FROM
-        repositories r
-      LEFT JOIN branch_counts b
-        ON r.repository_full_name = b.repository_full_name
-      ORDER BY
-        "Total Branches" DESC;
-    EOQ
-}
 
-query "github_lambda_repositories" {
+query "github_wild_repositories" {
   sql = <<-EOQ
       WITH repositories AS (
         SELECT
@@ -186,7 +142,7 @@ query "github_lambda_repositories" {
           github_my_repository
         WHERE
           is_archived = false
-          AND url LIKE 'https://github.com/UKHSA-Internal/edap%lambda%'
+          AND url LIKE $1
       ),
       branch_counts AS (
         SELECT
