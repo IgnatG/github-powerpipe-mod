@@ -30,18 +30,17 @@ dashboard "github_admin_dashboard" {
     table {
       title = "Glue Job repositories"
       query = query.github_wild_repositories
-      param "repo" {
-        default = "https://github.com/UKHSA-Internal/edap%glue%"
+      args = {
+        repo = "https://github.com/UKHSA-Internal/edap%glue%"
       }
-    }
   }
 
   container {
     table {
       title = "Lambda repositories"
       query = query.github_wild_repositories
-      param "repo" {
-        default = "https://github.com/UKHSA-Internal/edap%lambda%"
+      args = {
+        repo = "https://github.com/UKHSA-Internal/edap%lambda%"
       }
     }
   }
