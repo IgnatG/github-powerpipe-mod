@@ -80,6 +80,8 @@ query "github_total_repository_branches" {
       repositories r
       LEFT JOIN branch_counts b
       ON r.repository_full_name = b.repository_full_name
+    WHERE
+      r.is_archived = false
   EOQ
 }
 
