@@ -15,7 +15,7 @@ dashboard "github_branch_counts_dashboard" {
     }
 
     card {
-      query = query = query.github_total_branches
+      query = query.github_total_branches
       width = 3
       type  = "alert" 
     }
