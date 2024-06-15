@@ -32,6 +32,20 @@ dashboard "github_admin_dashboard" {
       query = query.github_branches_by_repository
     }
   }
+  
+  container {
+    table {
+      title = "Branch Glue Job repositories"
+      query = query.github_glue_job_repositories
+    }
+  }
+
+  container {
+    table {
+      title = "Branch Lambda repositories"
+      query = query.github_lambda_repositories
+    }
+  }
 }
 
 query "github_total_repositories" {
@@ -104,6 +118,108 @@ query "github_total_archived_repositories" {
       WHERE
         url LIKE 'https://github.com/UKHSA-Internal/edap%'
         AND is_archived = true
+    EOQ
+}
+
+query "github_glue_job_repositories" {
+  sql = <<-EOQ
+      WITH repositories AS (
+        SELECT
+          REPLACE(url, 'https://github.com/', '') AS repository_full_name,
+          url,
+          pushed_at,
+          primary_language ->> 'name' as language,
+          disk_usage,
+          is_archived
+        FROM
+          github_my_repository
+        WHERE
+          is_archived = false
+          AND url LIKE 'https://github.com/UKHSA-Internal/edap%glue-job%'
+      ),
+      branch_counts AS (
+        SELECT
+          repository_full_name,
+          COUNT(name) AS branch_count
+        FROM
+          github_branch
+        WHERE
+          repository_full_name IN (
+            SELECT
+              repository_full_name
+            FROM
+              repositories
+          )
+        GROUP BY
+          repository_full_name
+      )
+      SELECT
+        r.url AS "Repository URL",
+        TO_CHAR(r.pushed_at, 'DD-MM-YYYY HH24:MI:SS') AS "Last Push",
+        COALESCE(r.language, 'Unknown') AS "Language",
+        ROUND((CAST(r.disk_usage AS NUMERIC) / 1024), 2) || ' Mb' AS "Repository size (MB)",
+        CASE
+          WHEN r.is_archived THEN 'Yes'
+          ELSE 'No'
+        END AS "Is Archived",
+        COALESCE(b.branch_count, 0) AS "Total Branches"
+      FROM
+        repositories r
+      LEFT JOIN branch_counts b
+        ON r.repository_full_name = b.repository_full_name
+      ORDER BY
+        "Total Branches" DESC;
+    EOQ
+}
+
+query "github_lambda_repositories" {
+  sql = <<-EOQ
+      WITH repositories AS (
+        SELECT
+          REPLACE(url, 'https://github.com/', '') AS repository_full_name,
+          url,
+          pushed_at,
+          primary_language ->> 'name' as language,
+          disk_usage,
+          is_archived
+        FROM
+          github_my_repository
+        WHERE
+          is_archived = false
+          AND url LIKE 'https://github.com/UKHSA-Internal/edap%lambda%'
+      ),
+      branch_counts AS (
+        SELECT
+          repository_full_name,
+          COUNT(name) AS branch_count
+        FROM
+          github_branch
+        WHERE
+          repository_full_name IN (
+            SELECT
+              repository_full_name
+            FROM
+              repositories
+          )
+        GROUP BY
+          repository_full_name
+      )
+      SELECT
+        r.url AS "Repository URL",
+        TO_CHAR(r.pushed_at, 'DD-MM-YYYY HH24:MI:SS') AS "Last Push",
+        COALESCE(r.language, 'Unknown') AS "Language",
+        ROUND((CAST(r.disk_usage AS NUMERIC) / 1024), 2) || ' Mb' AS "Repository size (MB)",
+        CASE
+          WHEN r.is_archived THEN 'Yes'
+          ELSE 'No'
+        END AS "Is Archived",
+        COALESCE(b.branch_count, 0) AS "Total Branches"
+      FROM
+        repositories r
+      LEFT JOIN branch_counts b
+        ON r.repository_full_name = b.repository_full_name
+      ORDER BY
+        "Total Branches" DESC;
     EOQ
 }
 
