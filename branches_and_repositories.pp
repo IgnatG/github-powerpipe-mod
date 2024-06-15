@@ -25,25 +25,25 @@ dashboard "github_admin_dashboard" {
       type = "info"
     }
   }
-
-  container {
-    table {
-      title = "Branch Counts by Repository"
-      query = query.github_branches_by_repository
-    }
-  }
   
   container {
     table {
-      title = "Branch Glue Job repositories"
+      title = "Glue Job repositories"
       query = query.github_glue_job_repositories
     }
   }
 
   container {
     table {
-      title = "Branch Lambda repositories"
+      title = "Lambda repositories"
       query = query.github_lambda_repositories
+    }
+  }
+
+  container {
+    table {
+      title = "Branch Counts by Repository"
+      query = query.github_branches_by_repository
     }
   }
 }
@@ -135,7 +135,7 @@ query "github_glue_job_repositories" {
           github_my_repository
         WHERE
           is_archived = false
-          AND url LIKE 'https://github.com/UKHSA-Internal/edap%glue-job%'
+          AND url LIKE 'https://github.com/UKHSA-Internal/edap%glue%'
       ),
       branch_counts AS (
         SELECT
