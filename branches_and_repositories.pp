@@ -31,7 +31,7 @@ dashboard "github_admin_dashboard" {
       title = "POSIT repositories"
       query = query.github_template_query
       args = {
-        repo = "https://github.com/UKHSA-Internal/edap%posit%"
+        criterion1 = "https://github.com/UKHSA-Internal/edap%posit%"
       }
     }
   }
@@ -41,7 +41,7 @@ dashboard "github_admin_dashboard" {
       title = "Glue Job repositories"
       query = query.github_template_query
       args = {
-        repo = "https://github.com/UKHSA-Internal/edap%glue%"
+        criterion1 = "https://github.com/UKHSA-Internal/edap%glue-script%"
       }
     }
   }
@@ -51,7 +51,7 @@ dashboard "github_admin_dashboard" {
       title = "Lambda repositories"
       query = query.github_template_query
       args = {
-        repo = "https://github.com/UKHSA-Internal/edap%lambda%"
+        criterion1 = "https://github.com/UKHSA-Internal/edap%lambda%"
       }
     }
   }
@@ -61,7 +61,7 @@ dashboard "github_admin_dashboard" {
       title = "Fargate repositories"
       query = query.github_template_query
       args = {
-        repo = "https://github.com/UKHSA-Internal/edap%fargate%"
+        criterion1 = "https://github.com/UKHSA-Internal/edap%fargate%"
       }
     }
   }
@@ -71,7 +71,8 @@ dashboard "github_admin_dashboard" {
       title = "TrueDat repositories"
       query = query.github_template_query
       args = {
-        repo = "https://github.com/UKHSA-Internal/edap%td-% OR url LIKE https://github.com/UKHSA-Internal/edap%truedat%"
+        criterion1 = "https://github.com/UKHSA-Internal/edap%td-%"
+        criterion2 = "https://github.com/UKHSA-Internal/edap%truedat%"
       }
     }
   }
@@ -165,7 +166,7 @@ query "github_template_query" {
           github_my_repository
         WHERE
           is_archived = false
-          AND (url LIKE $1)
+          AND (url LIKE $1 OR LIKE $2)
       ),
       branch_counts AS (
         SELECT
@@ -201,7 +202,11 @@ query "github_template_query" {
         "Total Branches" DESC;
     EOQ
 
-    param "repo" {
+    param "criterion1" {
+      default = ""
+    }
+    
+    param "criterion2" {
       default = ""
     }
 }
