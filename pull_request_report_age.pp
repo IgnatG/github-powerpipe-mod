@@ -78,90 +78,96 @@ dashboard "pull_request_open_age_report" {
 
 query "open_pull_request_count" {
   sql = <<-EOQ
-    select
+    SELECT
       count(*) as value,
       'Open PRs' as label
-    from
+    FROM
       github_my_repository r
-      join github_pull_request p on p.repository_full_name = r.name_with_owner
-    where
-      p.state = 'OPEN';
+      JOIN github_pull_request p ON p.repository_full_name = r.name_with_owner
+    WHERE
+      p.state = 'OPEN'
+      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
 query "open_pull_request_24_hours_count" {
   sql = <<-EOQ
-    select
+    SELECT
       '< 24 Hours' as label,
       count(p.*) as value
-    from
+    FROM
       github_my_repository r
-      join github_pull_request p on p.repository_full_name = r.name_with_owner
-    where
+      JOIN github_pull_request p ON p.repository_full_name = r.name_with_owner
+    WHERE
       p.state = 'OPEN'
-      and p.created_at > now() - '1 days'::interval;
+      AND p.created_at > now() - '1 days'::interval
+      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
 query "open_pull_request_30_days_count" {
   sql = <<-EOQ
-    select
+    SELECT
       '1-30 Days' as label,
       count(p.*) as value
-    from
+    FROM
       github_my_repository r
-      join github_pull_request p on p.repository_full_name = r.name_with_owner
-    where
+      JOIN github_pull_request p ON p.repository_full_name = r.name_with_owner
+    WHERE
       p.state = 'OPEN'
-      and p.created_at between symmetric now() - '1 days' :: interval and now() - '30 days' :: interval;
+      AND p.created_at between symmetric now() - '1 days' :: interval AND now() - '30 days' :: interval
+      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
 query "open_pull_request_30_90_days_count" {
   sql = <<-EOQ
-    select
+    SELECT
       '30-90 Days' as label,
       count(p.*) as value
-    from
+    FROM
       github_my_repository r
-      join github_pull_request p on p.repository_full_name = r.name_with_owner
-    where
+      JOIN github_pull_request p ON p.repository_full_name = r.name_with_owner
+    WHERE
       p.state = 'OPEN'
-      and p.created_at between symmetric now() - '30 days' :: interval and now() - '90 days' :: interval;
+      AND p.created_at between symmetric now() - '30 days' :: interval AND now() - '90 days' :: interval
+      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
 query "open_pull_request_90_365_days_count" {
   sql = <<-EOQ
-    select
+    SELECT
       '90-365 Days' as label,
       count(p.*) as value
-    from
+    FROM
       github_my_repository r
-      join github_pull_request p on p.repository_full_name = r.name_with_owner
-    where
+      JOIN github_pull_request p ON p.repository_full_name = r.name_with_owner
+    WHERE
       p.state = 'OPEN'
-      and p.created_at between symmetric now() - '90 days' :: interval and now() - '365 days' :: interval;
+      AND p.created_at between symmetric now() - '90 days' :: interval AND now() - '365 days' :: interval
+      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
 query "open_pull_request_1_year_count" {
   sql = <<-EOQ
-    select
+    SELECT
       '> 1 Year' as label,
       count(p.*) as value
-    from
+    FROM
       github_my_repository r
-      join github_pull_request p on p.repository_full_name = r.name_with_owner
-    where
+      JOIN github_pull_request p ON p.repository_full_name = r.name_with_owner
+    WHERE
       p.state = 'OPEN'
-      and p.created_at <= now() - '1 year' :: interval;
+      AND p.created_at <= now() - '1 year' :: interval
+      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
 query "open_pull_request_table" {
   sql = <<-EOQ
-    select
+    SELECT
       '#' || number || ' ' || title as "PR",
       repository_full_name as "Repository",
       now()::date - p.created_at::date as "Age in Days",
@@ -175,12 +181,13 @@ query "open_pull_request_table" {
       end as "Author Association",
       p.url,
       r.url as repo_url
-    from
+    FROM
       github_my_repository r
-      join github_pull_request p on p.repository_full_name = r.name_with_owner
-    where
+      JOIN github_pull_request p ON p.repository_full_name = r.name_with_owner
+    WHERE
       p.state = 'OPEN'
-    order by
-      "Age in Days" desc;
+      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
+    ORDER BY
+      "Age in Days" desc
   EOQ
 }
