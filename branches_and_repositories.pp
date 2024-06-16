@@ -187,7 +187,7 @@ query "github_template_query" {
           is_archived = false
           AND (url LIKE $1 OR url LIKE $2 OR url LIKE $3)
         ORDER BY
-          pushed_at DESC;
+          pushed_at DESC
       ),
       branch_counts AS (
         SELECT
@@ -260,7 +260,7 @@ query "github_other_repos" {
               OR url LIKE 'https://github.com/UKHSA-Internal/edap%fargate%'
           )
         ORDER BY
-          pushed_at DESC;
+          pushed_at DESC
       ),
       branch_counts AS (
         SELECT
