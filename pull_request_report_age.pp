@@ -11,6 +11,36 @@ dashboard "pull_request_open_age_report" {
       query = query.open_pull_request_count
       width = 2
     }
+
+    card {
+      query = query.open_pull_request_24_hours_count
+      width = 2
+      type  = "info"
+    }
+
+    card {
+      query = query.open_pull_request_30_days_count
+      width = 2
+      type  = "info"
+    }
+
+    card {
+      query = query.open_pull_request_30_90_days_count
+      width = 2
+      type  = "info"
+    }
+
+    card {
+      query = query.open_pull_request_90_365_days_count
+      width = 2
+      type  = "info"
+    }
+
+    card {
+      query = query.open_pull_request_1_year_count
+      width = 2
+      type  = "info"
+    }
   }
 
   container {
@@ -59,6 +89,75 @@ query "open_pull_request_count" {
   EOQ
 }
 
+query "open_pull_request_24_hours_count" {
+  sql = <<-EOQ
+    select
+      '< 24 Hours' as label,
+      count(p.*) as value
+    from
+      github_my_repository r
+      join github_pull_request p on p.repository_full_name = r.name_with_owner
+    where
+      p.state = 'OPEN'
+      and p.created_at > now() - '1 days'::interval;
+  EOQ
+}
+
+query "open_pull_request_30_days_count" {
+  sql = <<-EOQ
+    select
+      '1-30 Days' as label,
+      count(p.*) as value
+    from
+      github_my_repository r
+      join github_pull_request p on p.repository_full_name = r.name_with_owner
+    where
+      p.state = 'OPEN'
+      and p.created_at between symmetric now() - '1 days' :: interval and now() - '30 days' :: interval;
+  EOQ
+}
+
+query "open_pull_request_30_90_days_count" {
+  sql = <<-EOQ
+    select
+      '30-90 Days' as label,
+      count(p.*) as value
+    from
+      github_my_repository r
+      join github_pull_request p on p.repository_full_name = r.name_with_owner
+    where
+      p.state = 'OPEN'
+      and p.created_at between symmetric now() - '30 days' :: interval and now() - '90 days' :: interval;
+  EOQ
+}
+
+query "open_pull_request_90_365_days_count" {
+  sql = <<-EOQ
+    select
+      '90-365 Days' as label,
+      count(p.*) as value
+    from
+      github_my_repository r
+      join github_pull_request p on p.repository_full_name = r.name_with_owner
+    where
+      p.state = 'OPEN'
+      and p.created_at between symmetric now() - '90 days' :: interval and now() - '365 days' :: interval;
+  EOQ
+}
+
+query "open_pull_request_1_year_count" {
+  sql = <<-EOQ
+    select
+      '> 1 Year' as label,
+      count(p.*) as value
+    from
+      github_my_repository r
+      join github_pull_request p on p.repository_full_name = r.name_with_owner
+    where
+      p.state = 'OPEN'
+      and p.created_at <= now() - '1 year' :: interval;
+  EOQ
+}
 
 query "open_pull_request_table" {
   sql = <<-EOQ
@@ -66,6 +165,7 @@ query "open_pull_request_table" {
       '#' || number || ' ' || title as "PR",
       repository_full_name as "Repository",
       now()::date - p.created_at::date as "Age in Days",
+      now()::date - p.updated_at::date as "Days Since Last Update",
       mergeable as "Mergeable State",
       author ->> 'login' as "Author",
       author ->> 'url' as "author_url",
