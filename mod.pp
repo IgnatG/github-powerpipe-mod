@@ -1,5 +1,5 @@
 mod "github" {
-  title = "Branches in GitHub repositories"
-  name = "GitHub Branch Count Mod"
-  description = "A mod to count branches in GitHub repositories"
+  title = "GitHub Admin"
+  name = "GitHub Admin - Custom Mod"
+  description = "A custom GitHub mod"
 }
