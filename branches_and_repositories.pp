@@ -52,6 +52,7 @@ dashboard "github_admin_dashboard" {
       query = query.github_template_query
       args = {
         stm1 = "https://github.com/UKHSA-Internal/edap%glue-script%"
+        stm2 = "https://github.com/UKHSA-Internal/edap%glue_script%"
       }
     }
   }
@@ -82,7 +83,8 @@ dashboard "github_admin_dashboard" {
       query = query.github_template_query
       args = {
         stm1 = "https://github.com/UKHSA-Internal/edap%td-%"
-        stm2 = "https://github.com/UKHSA-Internal/edap%truedat%"
+        stm2 = "https://github.com/UKHSA-Internal/edap%-td%"
+        stm3 = "https://github.com/UKHSA-Internal/edap%truedat%"
       }
     }
   }
@@ -183,7 +185,9 @@ query "github_template_query" {
           github_my_repository
         WHERE
           is_archived = false
-          AND (url LIKE $1 OR url LIKE $2)
+          AND (url LIKE $1 OR url LIKE $2 OR url LIKE $3)
+        ORDER BY
+          pushed_at DESC;
       ),
       branch_counts AS (
         SELECT
@@ -215,8 +219,6 @@ query "github_template_query" {
         repositories r
       LEFT JOIN branch_counts b
         ON r.repository_full_name = b.repository_full_name
-      ORDER BY
-        "Last Push" DESC;
     EOQ
 
     param "stm1" {
@@ -224,6 +226,10 @@ query "github_template_query" {
     }
     
     param "stm2" {
+      default = ""
+    }
+
+    param "stm3" {
       default = ""
     }
 }
@@ -245,12 +251,16 @@ query "github_other_repos" {
           AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
           AND NOT (
               url LIKE 'https://github.com/UKHSA-Internal/edap%glue-script%'
+              OR url LIKE 'https://github.com/UKHSA-Internal/edap%glue_script%'
               OR url LIKE 'https://github.com/UKHSA-Internal/edap%lambda%'
+              OR url LIKE 'https://github.com/UKHSA-Internal/edap%terraform%'
               OR url LIKE 'https://github.com/UKHSA-Internal/edap%td-%'
               OR url LIKE 'https://github.com/UKHSA-Internal/edap%truedat%'
               OR url LIKE 'https://github.com/UKHSA-Internal/edap%posit%'
               OR url LIKE 'https://github.com/UKHSA-Internal/edap%fargate%'
           )
+        ORDER BY
+          pushed_at DESC;
       ),
       branch_counts AS (
         SELECT
@@ -282,7 +292,5 @@ query "github_other_repos" {
         repositories r
       LEFT JOIN branch_counts b
         ON r.repository_full_name = b.repository_full_name
-      ORDER BY
-        "Last Push" DESC;
     EOQ
 }
