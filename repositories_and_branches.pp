@@ -1,5 +1,10 @@
 dashboard "github_admin_dashboard" {  
-  title = "GitHub - Admin Dashboard"
+  title = "GitHub Repositories and Branches"
+
+  tags = merge(local.repositories_common_tags, {
+    type     = "Report"
+  })
+
   container {
     card {
       query = query.github_total_repositories
