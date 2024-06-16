@@ -243,12 +243,12 @@ query "github_other_repos" {
         WHERE
           is_archived = false
           AND NOT (
-            url LIKE "https://github.com/UKHSA-Internal/edap%glue-script%"
-            OR url LIKE "https://github.com/UKHSA-Internal/edap%lambda%"
-            OR url LIKE "https://github.com/UKHSA-Internal/edap%td-%"
-            OR url LIKE "https://github.com/UKHSA-Internal/edap%truedat%"
-            OR url LIKE "https://github.com/UKHSA-Internal/edap%posit%"
-            OR url LIKE "https://github.com/UKHSA-Internal/edap%fargate%"
+            url LIKE 'https://github.com/UKHSA-Internal/edap%glue-script%'
+            OR url LIKE 'https://github.com/UKHSA-Internal/edap%lambda%'
+            OR url LIKE 'https://github.com/UKHSA-Internal/edap%td-%'
+            OR url LIKE 'https://github.com/UKHSA-Internal/edap%truedat%'
+            OR url LIKE 'https://github.com/UKHSA-Internal/edap%posit%'
+            OR url LIKE 'https://github.com/UKHSA-Internal/edap%fargate%'
           )
       ),
       branch_counts AS (
