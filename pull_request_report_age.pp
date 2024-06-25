@@ -86,7 +86,7 @@ query "open_pull_request_count" {
       JOIN github_pull_request p ON p.repository_full_name = r.name_with_owner
     WHERE
       p.state = 'OPEN'
-      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
+      AND r.url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
@@ -101,7 +101,7 @@ query "open_pull_request_24_hours_count" {
     WHERE
       p.state = 'OPEN'
       AND p.created_at > now() - '1 days'::interval
-      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
+      AND r.url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
@@ -116,7 +116,7 @@ query "open_pull_request_30_days_count" {
     WHERE
       p.state = 'OPEN'
       AND p.created_at between symmetric now() - '1 days' :: interval AND now() - '30 days' :: interval
-      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
+      AND r.url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
@@ -131,7 +131,7 @@ query "open_pull_request_30_90_days_count" {
     WHERE
       p.state = 'OPEN'
       AND p.created_at between symmetric now() - '30 days' :: interval AND now() - '90 days' :: interval
-      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
+      AND r.url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
@@ -146,7 +146,7 @@ query "open_pull_request_90_365_days_count" {
     WHERE
       p.state = 'OPEN'
       AND p.created_at between symmetric now() - '90 days' :: interval AND now() - '365 days' :: interval
-      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
+      AND r.url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
@@ -161,7 +161,7 @@ query "open_pull_request_1_year_count" {
     WHERE
       p.state = 'OPEN'
       AND p.created_at <= now() - '1 year' :: interval
-      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
+      AND r.url LIKE 'https://github.com/UKHSA-Internal/edap%'
   EOQ
 }
 
@@ -186,7 +186,7 @@ query "open_pull_request_table" {
       JOIN github_pull_request p ON p.repository_full_name = r.name_with_owner
     WHERE
       p.state = 'OPEN'
-      AND url LIKE 'https://github.com/UKHSA-Internal/edap%'
+      AND r.url LIKE 'https://github.com/UKHSA-Internal/edap%'
     ORDER BY
       "Age in Days" desc
   EOQ
